@@ -1,0 +1,53 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <math.h>
+
+#include "aux.h"
+
+Mat *trans(Mat *m) {                             //calcolo Mat trasformata                        
+  Mat *ris = mat_alloc(m->rows, m->rows);
+  
+  for (int i=0; i<m->rows; i++) {
+    for (int j=0; j<m->rows; j++) {
+      ris->mat[i][j] = m->mat[i][j]-i+j;
+    }
+  }
+  
+  return ris;
+}
+
+double trasforma_e_min_quad(Mat* m) {
+  double susinis=50, sudes=50, giusinis=50, giudes=50;
+  Mat *ris = trans(m);
+  int N = (ris->rows-1)/2;
+  
+  for (int i=0; i<ris->rows; i++) {
+    for (int j=0; j<ris->rows; j++) {
+      if (i<N && j<N) {
+        if (ris->mat[i][j]<susinis) {
+          susinis = ris->mat[i][j];
+        }
+      }
+      else if (i<N && j>N) {
+        if (ris->mat[i][j]<sudes) {
+          sudes = ris->mat[i][j];
+        }
+      }
+      else if (i>N && j<N) {
+        if (ris->mat[i][j]<giusinis) {
+          giusinis = ris->mat[i][j];
+        }
+      }
+      else if (i>N && j>N) {
+        if (ris->mat[i][j]<giudes) {
+          giudes = ris->mat[i][j];
+        }
+      }
+    }
+  }
+  
+  int sum = susinis + sudes + giusinis + giudes;
+  
+  return sum;
+}
