@@ -1,0 +1,77 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <math.h>
+#include "aux.h"
+
+Mat *inversione(Mat *m) {
+  Mat *ris = mat_alloc(m->rows, m->rows);
+  
+  for (int i=0; i<m->rows; i++) {
+    for (int j=0; j<m->rows; j++) {
+      if (j>i && m->mat[i][j]%2==0 || i>=j && m->mat[i][j]%2!=0) {
+        ris->mat[i][j] = m->mat[i][j]*-1;
+      }
+      else {
+        ris->mat[i][j] = m->mat[i][j];
+      }
+    }
+  }
+  
+  return ris;
+}
+
+double media(Mat *m) {
+  double me = 0;
+  
+  for (int i=0; i<m->rows; i++) {
+    for (int j=0; j<m->cols; j++) {
+      me += m->mat[i][j];
+    }
+  }
+  
+  me = me/(m->rows*m->cols);
+  return me;
+}
+
+Mat* inverti_e_max_quad(Mat* m) { 
+  Mat *inv = inversione(m);
+  double max = -1;
+  Mat *ris = NULL;
+  int N = m->rows / 2;
+
+  for (int k = 0; k < 4; k++) {
+    Mat *temp = mat_alloc(N, N);
+    for (int i = 0; i < N; i++) {
+      for (int j = 0; j < N; j++) {
+        switch (k) {
+          case 0:
+            temp->mat[i][j] = inv->mat[i][j];
+            break;
+          case 1:
+            temp->mat[i][j] = inv->mat[i][j + N];
+            break;
+          case 2:
+            temp->mat[i][j] = inv->mat[i + N][j];
+            break;
+          case 3:
+            temp->mat[i][j] = inv->mat[i + N][j + N];
+            break;
+        }
+      }
+    }
+    double current_media = media(temp);
+    if (current_media > max) {
+      if (ris != NULL) {
+        mat_free(ris);
+      }
+      ris = temp;
+      max = current_media;
+    } else {
+      mat_free(temp);
+    }
+  }
+
+  mat_free(inv);
+  return ris;
+}
