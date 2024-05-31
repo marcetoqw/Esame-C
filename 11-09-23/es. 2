@@ -1,0 +1,63 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+#include "aux.h"
+
+TipoLista append(TipoLista l, T e) {               //aggiungere alla fine
+  if (estVuota(l)) {
+    return cons(e, l);
+  }
+  return cons(car(l), append(cdr(l), e));
+}
+
+TipoLista aux(TipoLista l, TipoLista output, int ind, T primo) {     //ind conta quando è pari o dispari (se pari, aggiunge la somma). Primo è il primo elemento della lista.
+  if (estVuota(l)) {
+    return output;
+  }
+  
+  if (ind%2==0) {
+    if (estVuota(cdr(l))) {
+      output = append(output, car(l)+primo);
+      return aux(cdr(l), output, ind+=1, primo);
+    }
+    output = append(output, car(l)+car(cdr(l)));
+    return aux(cdr(l), output, ind+=1, primo);
+  }
+  return aux(cdr(l), output, ind+=1, primo);
+}
+
+TipoLista sommeDueADue(TipoLista l) {
+  if (estVuota(l)) {
+    return listaVuota();
+  }
+  
+  TipoLista ris = aux(l, listaVuota(), 0, car(l));
+  
+  return ris;
+}
+
+double media(TipoLista l, int somma, int lung) {   //calcolo media lista
+  if (estVuota(l)) {
+    if (lung==0) {
+      return 0.0;
+    }
+    double ris = (double) somma/lung;
+    return ris;
+  }
+  
+  somma += car(l);
+  return media(cdr(l), somma, lung);
+}
+
+double* mediaSommeDueADue(TipoLista* liste, int n) {
+  double *ris = (double*) malloc(n*sizeof(double));
+  
+  for (int i=0; i<n; i++) {
+    TipoLista temp = sommeDueADue(liste[i]);
+    double med = media(temp, 0, length(temp));
+    ris[i] = med;
+  }
+
+  return ris;
+}
