@@ -1,0 +1,24 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+#include "aux.h"
+
+TipoAlbero aux(TipoAlbero a, int k, int sum) {
+  if (estVuoto(a)) {
+    return albBinVuoto();
+  }
+  
+  sum += radice(a);
+  if (sum<=k) {
+    return creaAlbBin(radice(a), aux(sinistro(a), k, sum), aux(destro(a), k, sum));
+  }
+  return creaAlbBin(0, aux(sinistro(a), k, sum), aux(destro(a), k, sum));
+}
+
+TipoAlbero limita_albero(TipoAlbero a, int k) {
+  TipoAlbero ris = aux(a, k, 0);
+  
+  return ris;
+}
