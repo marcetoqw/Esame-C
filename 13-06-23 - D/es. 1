@@ -1,0 +1,67 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+#include "aux.h"                                           //troppo contorto e sono le due di notte quindi ho lasciato fare a chatgpt visto che non mi veniva :(
+                                                           //però insomma il concetto è quello, basta capirlo (lo dico solo per non sentirmi in colpa)
+bool ultimaOccorrenzaPari(Mat *m, int num) {
+    for (int i = m->rows - 1; i >= 0; i--) {
+        for (int j = m->cols - 1; j >= 0; j--) {
+            if (m->mat[i][j] == num) {
+                return (i % 2 == 0);
+            }
+        }
+    }
+    return false;
+}
+
+void modifica(Mat *m, int num, int n, int valore) {
+    for (int i = 0; i < m->rows; i++) {
+        for (int j = 0; j < m->cols; j++) {
+            if (m->mat[i][j] == num) {
+                if (--n > 0) {
+                    m->mat[i][j] = valore;
+                }
+            }
+        }
+    }
+}
+
+int volte(Mat *m, int num) {
+    int sum = 0;
+    for (int i = 0; i < m->rows; i++) {
+        for (int j = 0; j < m->cols; j++) {
+            if (m->mat[i][j] == num) {
+                sum++;
+            }
+        }
+    }
+    return sum;
+}
+
+Mat *copy(Mat *m) {
+    Mat *ris = mat_alloc(m->rows, m->cols);
+
+    
+    for (int i = 0; i < m->rows; i++) {
+        for (int j = 0; j < m->cols; j++) {
+            ris->mat[i][j] = m->mat[i][j];
+        }
+    }
+    return ris;
+}
+
+Mat *ultimi_gli_unici(Mat *m) {
+    Mat *ris = copy(m);
+    for (int i = 0; i < m->rows * m->cols; i++) {
+        int times = volte(ris, i);
+        if (times > 1) {
+            if (ultimaOccorrenzaPari(ris, i)) {
+                modifica(ris, i, times, -1);
+            } else {
+                modifica(ris, i, times, -2);
+            }
+        }
+    }
+    return ris;
+}
