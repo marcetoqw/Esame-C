@@ -1,0 +1,65 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+#include "aux.h"
+
+TipoLista append(TipoLista l, T e) {
+  if (estVuota(l)) {
+    return cons(e, l);
+  }
+  return cons(car(l), append(cdr(l), e));
+}
+
+int mediaSucc(TipoLista l, int sum, int lung) {    //calcola la media dei successivi (nella funzione principale come parametro mettere il successivo rispetto a dove stiamo)**
+  if (estVuota(l)) {
+    if (lung == 0) {
+      return 0;
+    }
+    return sum/lung;
+  }
+  sum += car(l);
+  lung += 1;
+  return mediaSucc(cdr(l), sum, lung);
+}
+
+TipoLista aux(TipoLista l, TipoLista output, int max) {
+  if (estVuota(l)) {
+    return output;
+  }
+  
+  output = append(output, max-mediaSucc(cdr(l), 0, 0));     //**
+  if (car(l)>max) {
+    max = car(l);
+  }
+  
+  return aux(cdr(l), output, max);
+}
+
+TipoLista mediaMenoMax(TipoLista l) {
+  TipoLista ris = aux(l, listaVuota(), 0);
+  
+  return ris;
+}
+
+int* massimiElementi(TipoLista* liste, int n){
+  int lung = length(liste[0]);
+  int *ris = (int*) malloc(lung*sizeof(int));
+  
+  for (int i=0; i<lung; i++) {   //le inizializzamo a -10 così è più ottimale
+    ris[i] = -10;
+  }
+  
+  for (int i=0; i<n; i++) {
+    TipoLista temp = mediaMenoMax(liste[i]);
+    for (int j=0; j<lung; j++) {
+      if (car(temp)>ris[j]) {
+        ris[j] = car(temp);
+      }
+      temp = cdr(temp);
+    }
+  }
+  
+  return ris;     
+}
+
