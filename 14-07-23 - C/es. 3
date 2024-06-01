@@ -1,0 +1,21 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+#include "aux.h"
+
+TipoAlbero aux(TipoAlbero a, int min, int dist) {
+  if (estVuoto(a)) {
+    return albBinVuoto();
+  }
+  
+  return creaAlbBin(radice(a)+dist, aux(sinistro(a), radice(a)<min? radice(a):min, (radice(a)<min? 0:dist)+1), aux(destro(a), radice(a)<min? radice(a):min, (radice(a)<min? 0:dist)+1));
+}
+  
+TipoAlbero sommaDistMinAntenato(TipoAlbero a) {
+	TipoAlbero ris = aux(a, 20, 0);
+	return ris;
+}
+
+
+//Vi sfido a capirlo
