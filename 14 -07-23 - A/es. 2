@@ -1,0 +1,82 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+#include "aux.h"
+
+TipoLista append(TipoLista l, T e) {
+  if (estVuota(l)) {
+    return cons(e, l);
+  }
+  return cons(car(l), append(cdr(l), e));
+}
+
+TipoLista suffisso(TipoLista l, TipoLista output) {
+  if (estVuota(l)) {
+    return output;
+  }
+  
+  if (estVuota(cdr(cdr(l)))) {
+    if (car(l)<=car(cdr(l))) {
+      output = append(output, car(l));
+      output = append(output, car(cdr(l)));
+      return suffisso(cdr(cdr(l)), output);
+    }
+    output = listaVuota();
+    output = append(output, car(cdr(l)));
+    return suffisso(cdr(cdr(l)), output);
+  }
+  if (car(l)<=car(cdr(l))) {
+    output = append(output, car(l));
+    return suffisso(cdr(l), output);
+  }
+  else {
+    output = listaVuota();
+    return suffisso(cdr(l), output);
+  }
+}
+
+int sum(TipoLista l) {
+  if (estVuota(l)) {
+    return 0;
+  }
+  return car(l)+sum(cdr(l));
+}
+
+TipoLista aux(TipoLista l, TipoLista suf, int somma) {
+  if (estVuota(l)) {
+    return listaVuota();
+  }
+  
+  int copia = somma;
+  somma += car(l);
+  return cons(copia-sum(suf), aux(cdr(l), suf, somma));
+}
+  
+TipoLista precedentiMenoSuffisso(TipoLista l) {
+  TipoLista suf = suffisso(l, listaVuota());
+  TipoLista ris = aux(l, suf, 0);
+  
+  return ris;
+}
+
+double media(TipoLista l, int somma, int lung) {
+  if (estVuota(l)) {
+    return (double) somma/lung;
+  }
+  
+  somma += car(l);
+  lung += 1;
+  return media(cdr(l), somma, lung);
+}
+
+double* mediaPrecedentiMenoSuffisso(TipoLista* liste, int n){
+  double *ris = (double*) malloc(n*sizeof(double));
+  
+  for (int i=0; i<n; i++) {
+    TipoLista temp = precedentiMenoSuffisso(liste[i]);
+    ris[i] = media(temp, 0, 0);
+  }
+  
+  return ris;
+}
