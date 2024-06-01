@@ -1,0 +1,36 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+#include "aux.h"
+
+void pari(TipoAlbero a, int* ris) {   //0 pari, 1 somma
+  if (estVuoto(a)) {
+    return;
+  }
+  
+  if (radice(a)%2==0) {
+    ris[0] += 1;
+  }
+  ris[1] += radice(a);
+  
+  pari(sinistro(a), ris);
+  pari(destro(a), ris);
+}
+
+TipoAlbero maxMenoMinPari(TipoAlbero a) {
+  if (estVuoto(a)) {
+    return albBinVuoto();
+  }
+  
+  int sx[] = {0, 0};
+  int dx[] = {0, 0};
+  pari(sinistro(a), sx);
+  pari(destro(a), dx);
+  
+  if (sx[0]>=dx[0]) {
+    return creaAlbBin(sx[1]-dx[1], maxMenoMinPari(sinistro(a)), maxMenoMinPari(destro(a)));
+  }
+  return creaAlbBin(dx[1]-sx[1], maxMenoMinPari(sinistro(a)), maxMenoMinPari(destro(a)));
+}
