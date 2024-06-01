@@ -1,0 +1,50 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+#include "aux.h"
+
+void dispari(TipoAlbero a, int *ris) {   // 0=min, 1=max, 2 dispari
+  if (estVuoto(a)) {
+    return;
+  }
+  
+  if (radice(a)%2!=0) {
+    ris[2] += 1;
+  }
+  if (radice(a)>ris[1]) {
+    ris[1] = radice(a);
+  }
+  if (radice(a)<ris[0]) {
+    ris[0] = radice(a);
+  }
+  
+  dispari(sinistro(a), ris);
+  dispari(destro(a), ris);
+}
+
+void diffSommaMinMaxDispari(TipoAlbero a) {
+  if (estVuoto(a)) {
+    return;
+  }
+  if (estVuoto(sinistro(a)) && estVuoto(destro(a))) {
+    a->info = 0;
+    return;
+  }
+  
+  int sx[] = {10, -10, 0};
+  int dx[] = {10, -10, 0};
+  dispari(sinistro(a), sx);
+  dispari(destro(a), dx);
+  
+  if (sx[2]>=dx[2]) {
+    a->info = (sx[1]+sx[0])-(dx[1]+dx[0]);
+  }
+  else {
+    a->info = (dx[1]+dx[0])-(sx[1]+sx[0]);
+  }
+  
+  diffSommaMinMaxDispari(sinistro(a));
+  diffSommaMinMaxDispari(destro(a));
+}
