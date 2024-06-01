@@ -1,0 +1,51 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <math.h>
+#include "aux.h"
+
+Mat *trans(Mat *m) {
+  Mat *ris = mat_alloc(m->rows, m->rows);
+  
+  for (int i=0; i<m->rows; i++) {
+    for (int j=0; j<m->rows; j++) {
+      ris->mat[i][j] = m->mat[j][i];
+    }
+  }
+  
+  return ris;
+}
+
+int sumDiag(Mat *m) {
+  int ris = 0;
+  
+  for (int i=0; i<m->rows; i++) {
+    ris += m->mat[i][i];
+  }
+  
+  return ris;
+}
+
+Mat* trasponi_e_massima_diagonale(Mat* m) {
+  Mat *ris = trans(m);
+  int N = m->rows/2;
+  int max = 0;
+  Mat *si;
+  
+  for (int i=0; i<=N; i++) {
+    for (int j=0; j<=N; j++) {
+      Mat *temp = mat_alloc(N, N);
+      for (int x=0; x<N; x++) {
+        for (int y=0; y<N; y++) {
+          temp->mat[x][y] = ris->mat[x+i][y+j];
+        }
+      }
+     if (sumDiag(temp) > max) {
+       max = sumDiag(temp);
+       si = temp;
+     }
+   }
+  }
+  
+  return si;
+}
