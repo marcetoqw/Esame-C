@@ -1,0 +1,62 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+#include "aux.h"
+
+TipoLista prefisso(TipoLista l) {
+  if (estVuota(l)) {
+    return listaVuota();
+  }
+  
+  if (!estVuota(cdr(l))) {
+    if (car(l)<car(cdr(l))) {
+      return cons(car(l), listaVuota());
+    }
+  }
+  return cons(car(l), prefisso(cdr(l)));
+}
+
+int somma(TipoLista l) {
+  if (estVuota(l)) {
+    return 0;
+  }
+  return car(l)+somma(cdr(l));
+}
+
+TipoLista aux(TipoLista l, TipoLista pre) {
+  if (estVuota(l)) {
+    return listaVuota();
+  }
+  
+  return cons(somma(cdr(l))-somma(pre), aux(cdr(l), pre));
+} 
+
+TipoLista successiviMenoPrefisso(TipoLista l) {
+  TipoLista ris = aux(l, prefisso(l));
+  
+  return ris;
+}
+
+int max(TipoLista l, int massimo) {
+  if (estVuota(l)) {
+    return massimo;
+  }
+  
+  if (car(l)>massimo) {
+    massimo = car(l);
+  }
+  return max(cdr(l), massimo);
+}
+
+int* maxSuccessiviMenoPrefisso(TipoLista* liste, int n) {
+  int *ris = (int*) malloc(n*sizeof(int));
+  
+  for (int i=0; i<n; i++) {
+    TipoLista temp = successiviMenoPrefisso(liste[i]);
+    ris[i] = max(temp, -10);
+  }
+  
+  return ris;
+}
+
