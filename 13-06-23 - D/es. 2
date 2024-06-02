@@ -1,0 +1,65 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+#include "aux.h"
+
+TipoLista aux(TipoLista l1, TipoLista l2, int k, int n) {
+  if (estVuota(l2)) {
+    return listaVuota();
+  }
+  
+  if (k>0) {
+    return cons(car(l1), aux(cdr(l1), l2, k-1, n));
+  }
+  if (n<=0) {
+    return cons(car(l2), aux(l1, cdr(l2), k, n));
+  }
+  return aux(l1, cdr(l2), k, n-1);
+}
+
+TipoLista porzioneDiListe(TipoLista l1, TipoLista l2, int k) {
+  if (k==0) {
+    return listaVuota();
+  }
+  
+  TipoLista ris = aux(l1, l2, k, length(l2)-k);
+  return ris;
+}
+
+TipoLista append(TipoLista l, T e) {
+  if (estVuota(l)) {
+    return cons(e, l);
+  }
+  return cons(car(l), append(cdr(l), e));
+}
+
+int sumK(TipoLista l, int k) {
+  if (k==0) {
+    return 0;
+  }
+  return car(l)+sumK(cdr(l), k-1);
+}
+
+int sumKK(TipoLista l, int k) {
+  if (estVuota(l)) {
+    return 0;
+  }
+  
+  if (k>0) {
+    return sumKK(cdr(l), k-1);
+  }
+  return car(l)+sumKK(cdr(l), k);
+}
+
+TipoLista diffPorzioniDiListe(TipoLista* liste1, TipoLista* liste2, int n, int k) {
+  TipoLista ris = listaVuota();
+  
+  for (int i=0; i<n; i++) {
+    int primo = sumK(liste1[i], k);
+    int secondo = sumKK(liste2[i], length(liste2[i])-k);
+    ris = append(ris, primo-secondo);
+  }
+  
+  return ris;
+}
