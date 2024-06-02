@@ -1,0 +1,65 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <math.h>
+#include "aux.h"
+
+int times(Mat *m, int n) {               // sbagliato ma amen
+  int ris = 0;
+  for (int i=0; i<m->rows; i++) {
+    for (int j=0; j<m->cols; j++) {
+      if (m->mat[i][j] == n) {
+        ris += 1;
+      }
+    }
+  }
+  return ris;
+}
+
+bool estPari(Mat *m, int n) {
+  for (int i=0; i<m->rows; i++) {
+    for (int j=0; j<m->cols; j++) {
+      if (m->mat[i][j] == n) {
+        if (i%2==0) {
+          return true;
+        }
+      }
+    }
+  }
+  return false;
+}     
+
+void mod(Mat *m, int n, int times, int cambio) {
+    for (int i = m->rows - 1; i >= 0 && times > 0; i--) {
+        for (int j = m->cols - 1; j >= 0 && times > 0; j--) {
+            if (m->mat[i][j] == n) {
+                m->mat[i][j] = cambio;
+                times--;
+            }
+        }
+    }
+}
+
+Mat *prima_gli_unici(Mat *m) {
+  Mat *ris = mat_alloc(m->rows, m->cols);
+  for (int i=0; i<m->rows; i++) {
+    for (int j=0; j<m->cols; j++) {
+      ris->mat[i][j] = m->mat[i][j];
+    }
+  }
+  
+  for (int i=0; i<=m->rows*m->cols; i++) {
+    int volte = times(ris, i);
+    
+    if (volte>1) {
+      if (estPari(ris, i)) {
+        mod(ris, i, volte-1, -2);
+      }
+      else {
+        mod(ris, i, volte-1, -1);
+      }
+    }
+  }
+  
+  return ris;
+}
