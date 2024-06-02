@@ -1,0 +1,65 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+#include "aux.h"
+
+int max(TipoAlbero a) {
+  if (estVuoto(a)) {
+    return 0;
+  }
+  
+  int sx = max(sinistro(a));
+  int dx = max(destro(a));
+  int ris;
+  
+  if (sx>=dx) {
+    ris = sx;
+  }
+  else if (dx>sx) {
+    ris = dx;
+  }
+  
+  if (radice(a)>ris) {
+    ris = radice(a);
+  }
+  
+  return ris;
+}
+
+int min(TipoAlbero a) {
+  if (estVuoto(a)) {
+    return 10;
+  }
+  
+  int sx = min(sinistro(a));
+  int dx = min(destro(a));
+  int ris;
+  
+  if (sx<=dx) {
+    ris = sx;
+  }
+  else if (dx<sx) {
+    ris = dx;
+  }
+  
+  if (radice(a)<ris) {
+    ris = radice(a);
+  }
+  
+  return ris;
+}
+
+  
+int sinistroMenoDestro(TipoAlbero a) {
+  if (estVuoto(a)) {
+    return 0;
+  }
+  
+  int mas = max(sinistro(a));
+  int mic = min(destro(a));
+  int ris = mas-mic;
+  
+  return ris;
+}
