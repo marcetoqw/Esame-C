@@ -1,0 +1,29 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+#include "aux.h"
+
+TipoAlbero aux(TipoAlbero a, int k, int sum, int lung) {
+  if (estVuoto(a)) {
+    return albBinVuoto();
+  }
+  if (estVuoto(sinistro(a)) && estVuoto(destro(a))) {
+    double media = (double) sum/lung;
+    if (k<media) {
+      return creaAlbBin(radice(a), creaAlbBin(radice(a), albBinVuoto(), albBinVuoto()), albBinVuoto());
+    }
+    return creaAlbBin(radice(a), creaAlbBin(radice(a)*-1, albBinVuoto(), albBinVuoto()), albBinVuoto());
+  }
+  
+  sum += radice(a);
+  lung += 1;
+  return creaAlbBin(radice(a), aux(sinistro(a), k, sum, lung), aux(destro(a), k, sum, lung));
+}
+
+TipoAlbero espandiAlbero(TipoAlbero a, int k) {
+  
+  TipoAlbero ris = aux(a, k, 0, 0);
+  return ris;
+}
