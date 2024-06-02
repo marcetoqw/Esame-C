@@ -1,0 +1,23 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+#include "aux.h"
+
+TipoAlbero aux(TipoAlbero a, int dist) {
+  if (estVuoto(a)) {
+    return albBinVuoto();
+  }
+  
+  return creaAlbBin(radice(a)+dist, aux(sinistro(a), dist+1), aux(destro(a), dist+1));
+}
+
+TipoAlbero alberoPiuDistanzaNodo(TipoAlbero a) {
+  TipoAlbero ris = aux(a, 0);
+  
+  return ris;
+}
+
+
+//5 ore pe fa quello prima e questo in due secondi dio bono
