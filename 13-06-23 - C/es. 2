@@ -1,0 +1,77 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+#include "aux.h"
+
+int max(TipoLista l, int piu) {
+  if (estVuota(l)) {
+    return piu;
+  }
+  
+  if (car(l)>piu) {
+    piu = car(l);
+  }
+  return max(cdr(l), piu);
+}
+
+TipoLista auxPa(TipoLista l, int k, int somma, int rem) {
+  if (estVuota(l)) {
+    return listaVuota();
+  }
+  if (k>1) {
+    somma += car(l);
+    return auxPa(cdr(l), k-1, somma, rem);
+  }
+  somma += car(l);
+  k = rem;
+  return cons(somma, auxPa(cdr(l), k, 0, rem));
+}
+  
+TipoLista auxDisp(TipoLista l, int k, int somma, int lung, int rem) {
+  if (estVuota(l)) {
+    return cons(somma, listaVuota());
+  }
+  
+  if (lung==0) {
+    somma += car(l);
+    return auxDisp(cdr(l), k, somma, lung, rem);
+  }
+  if (k>1) {
+    somma += car(l);
+    return auxDisp(cdr(l), k-1, somma, lung, rem);
+  }
+  somma += car(l);
+  k = rem;
+  return cons(somma, auxDisp(cdr(l), k, 0, lung-1, rem));
+}
+              
+TipoLista convoluzione(TipoLista l, int k) {
+  if (estVuota(l)) {
+    return listaVuota();
+  }
+  
+  TipoLista ris;
+  int lung = length(l)/k;
+  int rem = k;
+  if (length(l)%k==0) {
+    ris = auxPa(l, k, 0, rem);
+  }
+  else {
+    ris = auxDisp(l, k, 0, lung, rem);
+  }
+  
+  return ris;
+}
+
+int* maxPooling(TipoLista* liste, int* v, int n){
+  int *ris = (int*) malloc(n*sizeof(int));
+  
+  for (int i=0; i<n; i++) {
+    TipoLista trans = convoluzione(liste[i], v[i]);
+    int top = max(trans, 0);
+    ris[i] = top;
+  }
+  
+  return ris;
+}
